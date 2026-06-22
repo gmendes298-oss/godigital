@@ -1,309 +1,1592 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GODigital | Workspace Manager RT</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GODigital | Gestão Premium Hub v4</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; }
-    .sidebar-btn-active { background: #1e293b; color: #ffffff !important; }
-    .input-clean { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; outline: none; font-size: 14px; transition: all 0.2s; }
-    .input-clean:focus { border-color: #0f172a; ring: 2px rgba(15,23,42,0.1); }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    .premium-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+      transition: all 0.25s ease;
+    }
+
+    .premium-card:hover {
+      box-shadow: 0 18px 42px -18px rgba(0,0,0,0.12);
+    }
+
+    .premium-input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 12px 16px;
+      outline: none;
+      background: #ffffff;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .premium-input:focus {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.08);
+    }
+
+    .premium-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .premium-btn {
+      background: #0f172a;
+      color: white;
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-weight: 700;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .premium-btn:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.16);
+    }
+
+    .ghost-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-weight: 700;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .ghost-btn:hover { background: #f8fafc; }
+
+    .danger-btn {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #e11d48;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .tab-btn-active {
+      background: rgba(255,255,255,0.16) !important;
+      color: #ffffff !important;
+      font-weight: 700;
+    }
+
+    .drawer-open { transform: translateX(0) !important; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row">
 
-  <aside class="w-full md:w-[260px] bg-slate-900 text-slate-300 p-6 flex flex-col justify-between shrink-0">
-    <div>
-      <div class="mb-8">
-        <div class="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center font-black text-lg shadow-md mb-2">GO</div>
-        <h1 class="text-lg font-bold text-white tracking-tight">GODigital</h1>
-        <p class="text-slate-500 text-xs">Gestão Real-Time</p>
-      </div>
-      <nav class="space-y-1">
-        <button onclick="mudarAba('dashboard')" class="aba-btn sidebar-btn-active w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-sm font-medium"><i class="fa-solid fa-chart-pie w-5 text-center"></i>Dashboard</button>
-        <button onclick="mudarAba('agenda')" class="aba-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-sm font-medium"><i class="fa-solid fa-calendar w-5 text-center"></i>Agendamentos & Baias</button>
-        <button onclick="mudarAba('clientes')" class="aba-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-sm font-medium"><i class="fa-solid fa-users w-5 text-center"></i>Clientes CRM</button>
-        <button onclick="mudarAba('financeiro')" class="aba-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-all text-sm font-medium"><i class="fa-solid fa-wallet w-5 text-center"></i>Financeiro Pro</button>
-      </nav>
+<body class="min-h-screen flex flex-col lg:flex-row">
+
+  <div class="lg:hidden w-full bg-black text-white p-4 flex items-center justify-between sticky top-0 z-50 shadow-md">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-white text-black flex items-center justify-center text-sm font-black">GO</div>
+      <span class="font-bold tracking-tight">GODigital</span>
     </div>
-    <div class="text-[11px] text-slate-600 font-mono pt-4 border-t border-slate-800">v3.2 • Realtime Cloud</div>
+    <button onclick="toggleMobileMenu()" class="text-xl p-2 focus:outline-none">
+      <i id="menuIcon" class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+
+  <aside id="sidebar" class="hidden lg:flex fixed inset-y-0 left-0 z-40 lg:static w-[290px] bg-black text-white p-6 flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div class="flex flex-col h-full justify-between">
+      <div>
+        <div class="mb-8 hidden lg:block">
+          <div class="w-12 h-12 rounded-2xl bg-white text-black flex items-center justify-center text-xl font-black mb-3 shadow-inner">GO</div>
+          <h1 class="text-xl font-black tracking-tight">GODigital</h1>
+          <p class="text-neutral-400 text-xs">Premium Workspace Manager</p>
+        </div>
+
+        <nav class="space-y-1.5">
+          <button onclick="changeTab('dashboard')" class="tab-btn tab-btn-active w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-chart-line w-5 text-center"></i>Dashboard</button>
+          <button onclick="changeTab('agenda')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-calendar-check w-5 text-center"></i>Agendamentos</button>
+          <button onclick="changeTab('clientes')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-users w-5 text-center"></i>CRM Clientes</button>
+          <button onclick="changeTab('calendario')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-calendar-days w-5 text-center"></i>Calendário</button>
+          <button onclick="changeTab('baias')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-desktop w-5 text-center"></i>Controle de Baias</button>
+          <button onclick="changeTab('financeiro')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-wallet w-5 text-center"></i>Financeiro</button>
+          <button onclick="changeTab('mensagens')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-brands fa-whatsapp w-5 text-center"></i>Central de Alertas</button>
+          <button onclick="changeTab('config')" class="tab-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-neutral-400 hover:bg-neutral-900 transition-all text-sm"><i class="fa-solid fa-sliders w-5 text-center"></i>Configurações</button>
+        </nav>
+      </div>
+
+      <div class="pt-4 border-t border-neutral-900 text-[10px] text-neutral-500 font-mono text-center">
+        v4.0 Baias em Tempo Real • LocalStorage
+      </div>
+    </div>
   </aside>
 
-  <main class="flex-1 p-6 md:p-10 max-w-6xl w-full mx-auto">
-    
-    <section id="dashboard" class="aba-secao">
-      <h2 class="text-2xl font-bold tracking-tight mb-6">Dashboard Operacional</h2>
+  <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-[1700px] w-full mx-auto">
+    <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[.2em] text-slate-400 font-bold">GODigital Workspace</p>
+        <h2 id="pageTitle" class="text-3xl md:text-4xl font-extrabold tracking-tight mt-1 text-slate-900">Dashboard</h2>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="exportarBackup()" class="ghost-btn"><i class="fa-solid fa-download"></i> Backup</button>
+        <button onclick="limparFiltros()" class="ghost-btn"><i class="fa-solid fa-filter-circle-xmark"></i> Limpar filtros</button>
+      </div>
+    </header>
+
+    <section id="dashboard" class="tab-section">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white p-5 rounded-xl border border-slate-200"><p class="text-slate-400 text-xs font-bold uppercase">Clientes Base</p><h3 id="dashClientes" class="text-2xl font-bold mt-1">0</h3></div>
-        <div class="bg-white p-5 rounded-xl border border-slate-200"><p class="text-slate-400 text-xs font-bold uppercase">Agendamentos</p><h3 id="dashAgendamentos" class="text-2xl font-bold mt-1">0</h3></div>
-        <div class="bg-white p-5 rounded-xl border border-slate-200"><p class="text-emerald-600 text-xs font-bold uppercase">Recebido (Pago)</p><h3 id="dashRecebido" class="text-2xl font-bold mt-1 text-emerald-600">R$ 0,00</h3></div>
-        <div class="bg-white p-5 rounded-xl border border-slate-200"><p class="text-amber-600 text-xs font-bold uppercase">A Receber</p><h3 id="dashPendente" class="text-2xl font-bold mt-1 text-amber-600">R$ 0,00</h3></div>
+        <div class="premium-card p-6"><p class="text-slate-400 text-xs font-semibold uppercase">Clientes</p><h3 id="statClientes" class="text-3xl font-bold text-slate-900 mt-1">0</h3></div>
+        <div class="premium-card p-6"><p class="text-slate-400 text-xs font-semibold uppercase">Agendamentos Ativos</p><h3 id="statAgendamentos" class="text-3xl font-bold text-slate-900 mt-1">0</h3></div>
+        <div class="premium-card p-6"><p class="text-slate-400 text-xs font-semibold uppercase">Receita Recebida</p><h3 id="statReceita" class="text-2xl font-bold text-emerald-600 mt-1">R$ 0,00</h3></div>
+        <div class="premium-card p-6"><p class="text-slate-400 text-xs font-semibold uppercase">Baias Livres Agora</p><h3 id="statBaias" class="text-3xl font-bold text-indigo-600 mt-1">10</h3></div>
+      </div>
+
+      <div class="premium-card p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold text-slate-900">Próximas Atividades Cronológicas</h3>
+          <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-circle text-emerald-500 text-[8px] mr-1 animate-pulse"></i> Atualizado localmente</span>
+        </div>
+        <div id="dashboardList" class="space-y-3"></div>
       </div>
     </section>
 
-    <section id="agenda" class="aba-secao hidden">
-      <div class="grid lg:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-xl border border-slate-200 h-fit">
-          <h3 class="text-base font-bold mb-4">Novo Agendamento</h3>
+    <section id="agenda" class="tab-section hidden">
+      <div class="grid xl:grid-cols-3 gap-6">
+        <div class="premium-card p-6 h-fit">
+          <h3 id="tituloFormAgenda" class="text-lg font-bold mb-6 text-slate-900">Novo Agendamento</h3>
           <form id="formAgendamento" class="space-y-4">
-            <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Cliente</label><select id="agCliente" class="input-clean" required></select></div>
-            <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Serviço/Ativo</label>
-              <select id="agServico" class="input-clean" required>
-                <option value="coworking">Coworking (Baia)</option>
-                <option value="studio">Studio Audiovisual</option>
-                <option value="sala">Sala de Reunião</option>
-              </select>
+            <input type="hidden" id="agEditId">
+            <div><label class="premium-label">Cliente Atendido</label><select id="agCliente" class="premium-input text-sm" required></select></div>
+            <div><label class="premium-label">Serviço/Espaço</label><select id="agServico" class="premium-input text-sm" required></select></div>
+
+            <div id="boxBaia" class="hidden">
+              <label class="premium-label">Posição da Baia</label>
+              <select id="agBaia" class="premium-input text-sm"></select>
+              <p id="avisoBaias" class="text-xs mt-2 font-medium"></p>
             </div>
-            <div id="divBaia"><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Número da Baia (1 a 10)</label><input id="agBaia" type="number" min="1" max="10" class="input-clean" value="1"></div>
+
             <div class="grid grid-cols-2 gap-3">
-              <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Data</label><input id="agData" type="date" class="input-clean" required></div>
-              <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Horas</label><input id="agHoras" type="number" step="0.5" class="input-clean" required></div>
+              <div><label class="premium-label">Data</label><input id="agData" type="date" class="premium-input" required></div>
+              <div><label class="premium-label">Status Ocupação</label><select id="agStatus" class="premium-input text-sm"><option>Confirmado</option><option>Pendente</option><option>Cancelado</option></select></div>
             </div>
+
             <div class="grid grid-cols-2 gap-3">
-              <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Início</label><input id="agInicio" type="time" class="input-clean" required></div>
-              <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Preço/Hora (R$)</label><input id="agValor" type="number" step="0.01" class="input-clean" required></div>
+              <div><label class="premium-label">Check-in</label><input id="agInicio" type="time" class="premium-input" required></div>
+              <div><label class="premium-label">Check-out</label><input id="agFim" type="time" class="premium-input" required></div>
             </div>
+
             <div class="grid grid-cols-2 gap-3">
-              <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Pagamento</label><select id="agPagStatus" class="input-clean"><option>Pendente</option><option>Pago</option></select></div>
-              <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Meio</label><select id="agPagForma" class="input-clean"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select></div>
+              <div><label class="premium-label">Duração</label><input id="agHoras" type="number" step="0.5" min="0.5" class="premium-input" required></div>
+              <div><label class="premium-label">Preço Unitário</label><input id="agValor" type="number" step="0.01" class="premium-input" required></div>
             </div>
-            <button class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium p-3 rounded-lg text-sm transition-colors mt-2"><i class="fa-solid fa-plus mr-1"></i> Confirmar Reserva</button>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="premium-label">Status Financeiro</label><select id="agPagamentoStatus" class="premium-input text-sm"></select></div>
+              <div><label class="premium-label">Método</label><select id="agFormaPagamento" class="premium-input text-sm"></select></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="premium-label">Valor Pago</label><input id="agValorPago" type="number" step="0.01" class="premium-input" value="0"></div>
+              <div><label class="premium-label">Data Pagamento</label><input id="agDataPagamento" type="date" class="premium-input"></div>
+            </div>
+
+            <div><label class="premium-label">Notas Operacionais</label><textarea id="agObs" class="premium-input" rows="2"></textarea></div>
+            <div><label class="premium-label">Notas Financeiras</label><textarea id="agObsFinanceiro" class="premium-input" rows="2" placeholder="Comprovante, desconto, negociação, parcelamento..."></textarea></div>
+
+            <div class="rounded-2xl bg-slate-900 text-white p-4">
+              <p class="text-neutral-400 text-[11px] uppercase font-bold tracking-wider">Resumo financeiro</p>
+              <div class="flex items-end justify-between gap-3 mt-1">
+                <h4 id="previewTotal" class="text-2xl font-black text-white">R$ 0,00</h4>
+                <p id="previewSaldo" class="text-sm font-bold text-amber-300">Saldo: R$ 0,00</p>
+              </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+              <button class="premium-btn flex-1 text-sm"><i class="fa-solid fa-check"></i> Salvar</button>
+              <button type="button" onclick="resetFormAgenda()" class="ghost-btn">Limpar</button>
+            </div>
           </form>
         </div>
-        <div class="lg:col-span-2 space-y-4">
-          <h3 class="text-base font-bold">Linha de Ocupação & Cronômetros</h3>
+
+        <div class="premium-card p-6 xl:col-span-2">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <h3 class="text-lg font-bold text-slate-900">Histórico de Ocupação</h3>
+            <div class="w-full sm:w-72 relative">
+              <input id="filtroBusca" class="premium-input pl-9 text-xs" placeholder="Buscar cliente, serviço ou baia..." oninput="renderAgendamentos()">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+            </div>
+          </div>
           <div id="listaAgendamentos" class="space-y-3"></div>
         </div>
       </div>
     </section>
 
-    <section id="clientes" class="aba-secao hidden">
-      <div class="grid lg:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-xl border border-slate-200 h-fit">
-          <h3 class="text-base font-bold mb-4">Cadastrar Cliente</h3>
+    <section id="clientes" class="tab-section hidden">
+      <div class="grid xl:grid-cols-3 gap-6">
+        <div class="premium-card p-6 h-fit">
+          <h3 id="tituloFormCliente" class="text-lg font-bold mb-6 text-slate-900">Novo Registro CRM</h3>
           <form id="formCliente" class="space-y-4">
-            <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">Nome</label><input id="cliNome" class="input-clean" required placeholder="Nome do cliente"></div>
-            <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">WhatsApp</label><input id="cliTelefone" class="input-clean" required placeholder="(00) 00000-0000"></div>
-            <div><label class="text-xs font-bold text-slate-500 uppercase block mb-1">E-mail</label><input id="cliEmail" type="email" class="input-clean" placeholder="email@provedor.com"></div>
-            <button class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium p-3 rounded-lg text-sm transition-colors mt-2"><i class="fa-solid fa-user-plus mr-1"></i> Salvar Cliente</button>
+            <input type="hidden" id="cliEditId">
+            <div><label class="premium-label">Nome Completo</label><input id="cliNome" class="premium-input" required></div>
+            <div><label class="premium-label">WhatsApp</label><input id="cliTelefone" class="premium-input" placeholder="(00) 00000-0000" required></div>
+            <div><label class="premium-label">E-mail</label><input id="cliEmail" type="email" class="premium-input"></div>
+            <div><label class="premium-label">Instagram</label><input id="cliInstagram" class="premium-input" placeholder="@usuario"></div>
+            <div><label class="premium-label">Segmentação</label><select id="cliTipo" class="premium-input text-sm"><option>Avulso</option><option>Recorrente</option><option>Premium</option><option>Empresa</option></select></div>
+            <div class="flex gap-2 pt-2">
+              <button class="premium-btn flex-1 text-sm"><i class="fa-solid fa-user-plus"></i> Salvar</button>
+              <button type="button" onclick="resetFormCliente()" class="ghost-btn">Limpar</button>
+            </div>
           </form>
         </div>
-        <div class="lg:col-span-2">
-          <h3 class="text-base font-bold mb-4">Base Mapeada</h3>
-          <div id="listaClientes" class="grid sm:grid-cols-2 gap-3"></div>
+
+        <div class="premium-card p-6 xl:col-span-2">
+          <h3 class="text-lg font-bold mb-6 text-slate-900">Diretório Global de Clientes</h3>
+          <div id="listaClientes" class="grid sm:grid-cols-2 gap-4"></div>
         </div>
       </div>
     </section>
 
-    <section id="financeiro" class="aba-secao hidden">
-      <h2 class="text-xl font-bold mb-4">Fluxo de Caixa & Recebíveis</h2>
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <table class="w-full text-left text-sm border-collapse">
-          <thead>
-            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase">
-              <th class="p-4">Cliente</th>
-              <th class="p-4">Serviço/Baia</th>
-              <th class="p-4">Data</th>
-              <th class="p-4">Valor Total</th>
-              <th class="p-4">Status</th>
-              <th class="p-4">Forma</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaFinanceiro" class="divide-y divide-slate-100"></tbody>
-        </table>
+    <section id="calendario" class="tab-section hidden">
+      <div class="premium-card p-6">
+        <h3 class="text-lg font-bold text-slate-900">Timeline Consolidada</h3>
+        <p class="text-xs text-slate-400 mb-6">Visualização operacional cronológica dos espaços ativos.</p>
+        <div id="calendarioGrid" class="space-y-6"></div>
       </div>
     </section>
 
-  </main>
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <section id="baias" class="tab-section hidden">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="premium-card p-5">
+          <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider">Baias Livres</p>
+          <h3 id="baiasLivres" class="text-3xl font-black text-slate-900 mt-1">10</h3>
+        </div>
+        <div class="premium-card p-5">
+          <p class="text-rose-600 text-xs font-bold uppercase tracking-wider">Baias Ocupadas</p>
+          <h3 id="baiasOcupadas" class="text-3xl font-black text-slate-900 mt-1">0</h3>
+        </div>
+        <div class="premium-card p-5">
+          <p class="text-amber-600 text-xs font-bold uppercase tracking-wider">Encerrando em 10 min</p>
+          <h3 id="baiasEncerrando" class="text-3xl font-black text-slate-900 mt-1">0</h3>
+        </div>
+        <div class="premium-card p-5">
+          <p class="text-indigo-600 text-xs font-bold uppercase tracking-wider">Próxima Liberação</p>
+          <h3 id="baiasProximaLiberacao" class="text-lg font-black text-slate-900 mt-1">--:--</h3>
+        </div>
+      </div>
+
+      <div class="premium-card p-6 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Mapa Operacional das Baias</h3>
+            <p class="text-xs text-slate-400 mt-1">Acompanhe em tempo real as 10 baias de coworking, com contagem regressiva individual.</p>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <span class="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">Livre</span>
+            <span class="px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold">Ocupada</span>
+            <span class="px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold">Finalizando</span>
+            <button onclick="renderBaiasPainel()" class="ghost-btn"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="baiasGrid" class="grid sm:grid-cols-2 xl:grid-cols-5 gap-4"></div>
+
+      <div class="premium-card p-6 mt-6">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Fila de Próximas Reservas de Coworking</h3>
+        <div id="baiasProximasReservas" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <section id="financeiro" class="tab-section hidden">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div class="premium-card p-5"><p class="text-emerald-600 text-xs font-bold uppercase tracking-wider">Recebido</p><h3 id="finRecebido" class="text-2xl font-bold text-slate-900 mt-1">R$ 0,00</h3></div>
+        <div class="premium-card p-5"><p class="text-amber-600 text-xs font-bold uppercase tracking-wider">Em Aberto</p><h3 id="finPendente" class="text-2xl font-bold text-slate-900 mt-1">R$ 0,00</h3></div>
+        <div class="premium-card p-5"><p class="text-blue-600 text-xs font-bold uppercase tracking-wider">Parcial</p><h3 id="finParcial" class="text-2xl font-bold text-slate-900 mt-1">R$ 0,00</h3></div>
+        <div class="premium-card p-5"><p class="text-indigo-600 text-xs font-bold uppercase tracking-wider">Total Bruto</p><h3 id="finTotal" class="text-2xl font-bold text-slate-900 mt-1">R$ 0,00</h3></div>
+        <div class="premium-card p-5"><p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Ticket Médio</p><h3 id="finTicket" class="text-2xl font-bold text-slate-900 mt-1">R$ 0,00</h3></div>
+      </div>
+
+      <div class="grid xl:grid-cols-3 gap-6">
+        <div class="space-y-6">
+          <div class="premium-card p-6 h-fit">
+            <h3 class="text-lg font-bold mb-4 text-slate-900">Meios de Pagamento</h3>
+            <form id="formPagamento" class="flex gap-2 mb-4">
+              <input id="novaFormaPagamento" class="premium-input text-xs" placeholder="Ex: Pix, Crédito, Boleto..." required>
+              <button class="premium-btn text-xs px-4"><i class="fa-solid fa-plus"></i></button>
+            </form>
+            <div id="listaFormasPagamento" class="space-y-1.5 max-h-56 overflow-y-auto pr-1"></div>
+          </div>
+
+          <div class="premium-card p-6 h-fit">
+            <h3 class="text-lg font-bold mb-4 text-slate-900">Filtros Financeiros</h3>
+            <div class="space-y-3">
+              <div><label class="premium-label">Status</label><select id="finFiltroStatus" class="premium-input text-sm" onchange="renderFinanceiro()"><option value="">Todos</option></select></div>
+              <div><label class="premium-label">Forma</label><select id="finFiltroForma" class="premium-input text-sm" onchange="renderFinanceiro()"><option value="">Todas</option></select></div>
+              <div><label class="premium-label">Buscar</label><input id="finFiltroBusca" class="premium-input text-sm" placeholder="Cliente ou serviço..." oninput="renderFinanceiro()"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="premium-card p-6 xl:col-span-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Extrato Financeiro Editável</h3>
+              <p class="text-xs text-slate-400">Edite status, forma de pagamento, valor pago e data sem sair do financeiro.</p>
+            </div>
+            <button onclick="marcarTodosComoPagos()" class="ghost-btn"><i class="fa-solid fa-check-double"></i> Marcar pendentes como pagos</button>
+          </div>
+          <div id="listaFinanceiro" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mensagens" class="tab-section hidden">
+      <div class="premium-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Disparos de Notificação Ativa</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Lembretes manuais via WhatsApp Web.</p>
+          </div>
+          <button onclick="verificarLembretes(true)" class="premium-btn text-xs bg-emerald-600 hover:bg-emerald-700 text-white"><i class="fa-brands fa-whatsapp"></i> Varredura Geral</button>
+        </div>
+        <div id="listaMensagens" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <section id="config" class="tab-section hidden">
+      <div class="premium-card p-6 max-w-3xl">
+        <h3 class="text-lg font-bold text-slate-900">Precificação de Ativos</h3>
+        <p class="text-xs text-slate-400 mb-6">Altere os parâmetros base para novos agendamentos.</p>
+
+        <form id="formConfig" class="grid sm:grid-cols-2 gap-4">
+          <div><label class="premium-label">Coworking / Hora</label><input id="cfgCoworking" type="number" step="0.01" class="premium-input"></div>
+          <div><label class="premium-label">Studio / Hora</label><input id="cfgStudio" type="number" step="0.01" class="premium-input"></div>
+          <div><label class="premium-label">Sala de Reunião / Hora</label><input id="cfgSala" type="number" step="0.01" class="premium-input"></div>
+          <div><label class="premium-label">Pacote Foto Essencial</label><input id="cfgFotoEssencial" type="number" step="0.01" class="premium-input"></div>
+          <div><label class="premium-label">Pacote Foto Profissional</label><input id="cfgFotoProfissional" type="number" step="0.01" class="premium-input"></div>
+          <div><label class="premium-label">Pacote Foto Premium</label><input id="cfgFotoPremium" type="number" step="0.01" class="premium-input"></div>
+
+          <div class="sm:col-span-2 pt-4">
+            <button class="premium-btn text-sm w-full sm:w-auto"><i class="fa-solid fa-floppy-disk"></i> Salvar Diretrizes</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
 
 <script>
-// 🔥 COLE AQUI AS SUAS CREDENCIAIS DO CONFIG DO FIREBASE 🔥
-const firebaseConfig = {
-  apiKey: "AIzaSyDEGUQ7Ph44a7L03QHBOkiwO5zkURftHX4",
-  authDomain: "godigital-d75b4.firebaseapp.com",
-  databaseURL: "https://godigital-d75b4-default-rtdb.firebaseio.com",
-  projectId: "godigital-d75b4",
-  storageBucket: "godigital-d75b4.firebasestorage.app",
-  messagingSenderId: "99514180215",
-  appId: "1:99514180215:web:9df5afd0d4ce5f2f55dc72"
+const KEYS = {
+  clientes: "hub_clientes",
+  agendamentos: "hub_agendamentos",
+  config: "hub_config_precos",
+  aba: "hub_aba_ativa",
+  mensagens: "hub_mensagens_enviadas",
+  pagamentos: "hub_formas_pagamento"
 };
-// Inicializa o Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
-let clientes = [];
-let agendamentos = [];
+let clientes = safeParse(KEYS.clientes, []);
+let agendamentos = migrarAgendamentos(safeParse(KEYS.agendamentos, []));
+let mensagensEnviadas = safeParse(KEYS.mensagens, []);
+let formasPagamento = safeParse(KEYS.pagamentos, ["Pix", "Crédito", "Débito", "Dinheiro"]);
 
+let config = safeParse(KEYS.config, {
+  coworking: 30,
+  studio: 80,
+  sala: 50,
+  fotoEssencial: 250,
+  fotoProfissional: 450,
+  fotoPremium: 750
+});
+
+const servicos = [
+  { id:"coworking", nome:"Coworking", tipo:"hora", valorKey:"coworking" },
+  { id:"studio", nome:"Studio Audiovisual", tipo:"hora", valorKey:"studio" },
+  { id:"sala", nome:"Sala de Reunião", tipo:"hora", valorKey:"sala" },
+  { id:"fotoEssencial", nome:"Fotografia | Pacote Essencial", tipo:"pacote", valorKey:"fotoEssencial" },
+  { id:"fotoProfissional", nome:"Fotografia | Pacote Profissional", tipo:"pacote", valorKey:"fotoProfissional" },
+  { id:"fotoPremium", nome:"Fotografia | Pacote Premium", tipo:"pacote", valorKey:"fotoPremium" }
+];
+
+const statusPagamento = ["Pendente", "Pago", "Parcial", "Cortesia"];
 const $ = id => document.getElementById(id);
 
-function mudarAba(abaId) {
-  document.querySelectorAll(".aba-secao").forEach(s => s.classList.add("hidden"));
-  $(abaId).classList.remove("hidden");
-  document.querySelectorAll(".aba-btn").forEach(b => b.classList.remove("sidebar-btn-active"));
-  document.querySelectorAll(".aba-btn").forEach(b => {
-    if(b.getAttribute("onclick").includes(abaId)) b.classList.add("sidebar-btn-active");
-  });
-}
-
-$("agServico").addEventListener("change", () => {
-  if($("agServico").value === "coworking") { $("divBaia").classList.remove("hidden"); } 
-  else { $("divBaia").classList.add("hidden"); }
-});
-
-// Escuta em Tempo Real as Alterações vindas da Nuvem (Firebase Sync)
-db.ref("clientes").on("value", snapshot => {
-  const dados = snapshot.val();
-  clientes = dados ? Object.keys(dados).map(key => ({ id: key, ...dados[key] })) : [];
-  renderizarTudo();
-});
-
-db.ref("agendamentos").on("value", snapshot => {
-  const dados = snapshot.val();
-  agendamentos = dados ? Object.keys(dados).map(key => ({ id: key, ...dados[key] })) : [];
-  renderizarTudo();
-});
-
-// Salvar no Firebase (Envia para a Nuvem e reflete em todos os dispositivos)
-$("formCliente").addEventListener("submit", e => {
-  e.preventDefault();
-  const idNovo = Date.now().toString();
-  db.ref("clientes/" + idNovo).set({
-    nome: $("cliNome").value.trim(),
-    telefone: $("cliTelefone").value.trim(),
-    email: $("cliEmail").value.trim()
-  });
-  $("formCliente").reset();
-});
-
-$("formAgendamento").addEventListener("submit", e => {
-  e.preventDefault();
-  const idNovo = Date.now().toString();
-  const clienteSelecionado = clientes.find(c => c.id === $("agCliente").value);
-  const horas = Number($("agHoras").value);
-  const valorHora = Number($("agValor").value);
-
-  db.ref("agendamentos/" + idNovo).set({
-    clienteId: $("agCliente").value,
-    clienteNome: clienteSelecionado ? clienteSelecionado.nome : "Cliente Desconhecido",
-    servico: $("agServico").value,
-    baia: $("agServico").value === "coworking" ? $("agBaia").value : null,
-    data: $("agData").value,
-    inicio: $("agInicio").value,
-    horas: horas,
-    valorUnitario: valorHora,
-    total: horas * valorHora,
-    pagamentoStatus: $("agPagStatus").value,
-    formaPagamento: $("agPagForma").value
-  });
-  $("formAgendamento").reset();
-});
-
-function deletarAgendamento(id) {
-  if(confirm("Deseja realmente remover este agendamento?")) {
-    db.ref("agendamentos/" + id).remove();
+function safeParse(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
   }
 }
 
-function atualizarFinanceiroDireto(id, campo, valor) {
-  db.ref("agendamentos/" + id).update({ [campo]: valor });
+function migrarAgendamentos(lista) {
+  return lista.map(a => {
+    const total = Number(a.total || 0);
+    let valorPago = Number(a.valorPago || 0);
+
+    if ((a.pagamentoStatus === "Pago" || a.pagamentoStatus === "Cortesia") && !a.valorPago) {
+      valorPago = a.pagamentoStatus === "Cortesia" ? 0 : total;
+    }
+
+    return {
+      ...a,
+      pagamentoStatus: a.pagamentoStatus || "Pendente",
+      formaPagamento: a.formaPagamento || "Pix",
+      valorPago,
+      dataPagamento: a.dataPagamento || "",
+      obsFinanceiro: a.obsFinanceiro || ""
+    };
+  });
 }
 
-function formatarMoeda(v) { return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+function save() {
+  localStorage.setItem(KEYS.clientes, JSON.stringify(clientes));
+  localStorage.setItem(KEYS.agendamentos, JSON.stringify(agendamentos));
+  localStorage.setItem(KEYS.config, JSON.stringify(config));
+  localStorage.setItem(KEYS.mensagens, JSON.stringify(mensagensEnviadas));
+  localStorage.setItem(KEYS.pagamentos, JSON.stringify(formasPagamento));
+}
 
-function renderizarTudo() {
-  $("agCliente").innerHTML = clientes.map(c => `<option value="${c.id}">${c.nome}</option>`).join("") || `<option value="">Cadastre um cliente primeiro</option>`;
+function uid() {
+  return typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : Math.random().toString(36).substring(2, 11);
+}
 
-  $("listaClientes").innerHTML = clientes.map(c => `
-    <div class="bg-white p-4 rounded-xl border border-slate-200 text-sm">
-      <p class="font-bold text-slate-900">${c.nome}</p>
-      <p class="text-slate-500 text-xs mt-1"><i class="fa-solid fa-phone mr-1.5 text-slate-400"></i>${c.telefone}</p>
-      <p class="text-slate-500 text-xs"><i class="fa-solid fa-envelope mr-1.5 text-slate-400"></i>${c.email || '-'}</p>
-    </div>
-  `).join("") || `<p class="text-slate-400 text-xs italic">Nenhum cliente cadastrado.</p>`;
+function money(v) {
+  return Number(v || 0).toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+}
 
-  $("listaAgendamentos").innerHTML = agendamentos.map(a => {
-    const exibicaoLocal = a.baia ? `Baia 0${a.baia}` : a.servico.toUpperCase();
-    return `
-      <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-slate-900">${a.clienteNome}</span>
-            <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-md">${exibicaoLocal}</span>
+function cleanPhone(phone) { return String(phone || "").replace(/\D/g, ""); }
+
+function dateLabel(date) {
+  if(!date) return "";
+  return new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
+    weekday:"short", day:"2-digit", month:"short", year:"numeric"
+  });
+}
+
+function todayISO() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function getServico(id) { return servicos.find(s => s.id === id); }
+
+function serviceBadge(id) {
+  if (id === "coworking") return "bg-slate-900 text-white";
+  if (id === "studio") return "bg-indigo-100 text-indigo-800 border border-indigo-200";
+  if (id === "sala") return "bg-violet-100 text-violet-800 border border-violet-200";
+  return "bg-amber-100 text-amber-800 border border-amber-200";
+}
+
+function statusBadge(st) {
+  if(st === "Confirmado") return "bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 text-[11px] px-2 py-0.5 rounded-full";
+  if(st === "Pendente") return "bg-amber-50 text-amber-700 font-bold border border-amber-200 text-[11px] px-2 py-0.5 rounded-full";
+  return "bg-rose-50 text-rose-700 font-bold border border-rose-200 text-[11px] px-2 py-0.5 rounded-full";
+}
+
+function payStatusBadge(st) {
+  if(st === "Pago") return "text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl font-bold";
+  if(st === "Parcial") return "text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-xl font-bold";
+  if(st === "Cortesia") return "text-purple-600 bg-purple-50 border border-purple-200 px-2.5 py-1 rounded-xl font-bold";
+  return "text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl font-bold";
+}
+
+function saldo(a) {
+  if (a.pagamentoStatus === "Cortesia" || a.status === "Cancelado") return 0;
+  return Math.max(0, Number(a.total || 0) - Number(a.valorPago || 0));
+}
+
+function toggleMobileMenu() {
+  const sidebar = $("sidebar");
+  const menuIcon = $("menuIcon");
+  if(sidebar.classList.contains("hidden")) {
+    sidebar.classList.remove("hidden");
+    setTimeout(() => sidebar.classList.add("drawer-open"), 10);
+    menuIcon.className = "fa-solid fa-xmark";
+  } else {
+    sidebar.classList.remove("drawer-open");
+    setTimeout(() => sidebar.classList.add("hidden"), 300);
+    menuIcon.className = "fa-solid fa-bars";
+  }
+}
+
+function changeTab(tab) {
+  document.querySelectorAll(".tab-section").forEach(s => s.classList.add("hidden"));
+  if ($(tab)) $(tab).classList.remove("hidden");
+
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("tab-btn-active"));
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    if (b.getAttribute("onclick")?.includes(tab)) b.classList.add("tab-btn-active");
+  });
+
+  const titles = {
+    dashboard:"Dashboard Operacional",
+    agenda:"Central de Agendamentos",
+    clientes:"CRM Relacionamento",
+    calendario:"Calendário Dinâmico",
+    baias:"Controle de Baias",
+    financeiro:"Financeiro Editável",
+    mensagens:"Notificações WhatsApp",
+    config:"Diretrizes & Configurações"
+  };
+
+  $("pageTitle").textContent = titles[tab] || "Dashboard Operacional";
+  localStorage.setItem(KEYS.aba, tab);
+
+  if (window.innerWidth < 1024 && !$("sidebar").classList.contains("hidden")) {
+    toggleMobileMenu();
+  }
+
+  renderAll();
+}
+
+function renderAll() {
+  renderSelectClientes();
+  renderSelectServicos();
+  renderSelectPagamentos();
+  renderClientes();
+  renderAgendamentos();
+  renderCalendario();
+  renderDashboard();
+  renderConfig();
+  renderFinanceiro();
+  renderBaiasPainel();
+  verificarBaias();
+  calcTotal();
+  renderMensagens();
+}
+
+function renderSelectClientes() {
+  if (!$("agCliente")) return;
+
+  if (!clientes.length) {
+    $("agCliente").innerHTML = `<option value="">Cadastre um cliente no CRM primeiro</option>`;
+    $("agCliente").disabled = true;
+    return;
+  }
+
+  $("agCliente").disabled = false;
+  $("agCliente").innerHTML = `<option value="">Selecione um cliente...</option>` + clientes.map(c =>
+    `<option value="${c.id}">${c.nome}</option>`
+  ).join("");
+}
+
+function renderSelectServicos() {
+  $("agServico").innerHTML = servicos.map(s =>
+    `<option value="${s.id}">${s.nome} — ${money(config[s.valorKey])}${s.tipo === "hora" ? "/h" : ""}</option>`
+  ).join("");
+}
+
+function renderSelectPagamentos() {
+  $("agPagamentoStatus").innerHTML = statusPagamento.map(s => `<option>${s}</option>`).join("");
+  $("agFormaPagamento").innerHTML = formasPagamento.map(f => `<option>${f}</option>`).join("");
+
+  $("finFiltroStatus").innerHTML = `<option value="">Todos</option>` + statusPagamento.map(s => `<option value="${s}">${s}</option>`).join("");
+  $("finFiltroForma").innerHTML = `<option value="">Todas</option>` + formasPagamento.map(f => `<option value="${f}">${f}</option>`).join("");
+}
+
+function renderBaias(ocupadas = []) {
+  let html = `<option value="">Escolher baia disponível</option>`;
+  for (let i = 1; i <= 10; i++) {
+    const disabled = ocupadas.includes(i);
+    html += `<option value="${i}" ${disabled ? "disabled" : ""}>Mesa Operacional ${String(i).padStart(2, "0")}${disabled ? " (Ocupada)" : " (Livre)"}</option>`;
+  }
+  $("agBaia").innerHTML = html;
+}
+
+function isCoworking() { return $("agServico").value === "coworking"; }
+
+function timeToMinutes(t) {
+  if(!t) return 0;
+  const [h,m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+function minutesToTime(total) {
+  total = total % (24 * 60);
+  const h = Math.floor(total / 60).toString().padStart(2, "0");
+  const m = Math.round(total % 60).toString().padStart(2, "0");
+  return `${h}:${m}`;
+}
+
+function hasOverlap(aInicio, aFim, bInicio, bFim) {
+  return timeToMinutes(aInicio) < timeToMinutes(bFim) && timeToMinutes(aFim) > timeToMinutes(bInicio);
+}
+
+function getBaiasOcupadas(data, inicio, fim, ignoreId = null) {
+  if (!data || !inicio || !fim) return [];
+  return agendamentos
+    .filter(a =>
+      a.id !== ignoreId &&
+      a.servicoId === "coworking" &&
+      a.data === data &&
+      a.status !== "Cancelado" &&
+      a.baia &&
+      hasOverlap(inicio, fim, a.inicio, a.fim)
+    )
+    .map(a => Number(a.baia));
+}
+
+function verificarBaias() {
+  const data = $("agData").value;
+  const inicio = $("agInicio").value;
+  const fim = $("agFim").value;
+  const editId = $("agEditId").value || null;
+
+  if (!isCoworking()) {
+    $("boxBaia").classList.add("hidden");
+    return;
+  }
+
+  $("boxBaia").classList.remove("hidden");
+  const ocupadas = getBaiasOcupadas(data, inicio, fim, editId);
+  renderBaias(ocupadas);
+
+  if (!data || !inicio || !fim) {
+    $("avisoBaias").textContent = "Aguardando data e horário para verificar disponibilidade.";
+    $("avisoBaias").className = "text-xs mt-2 font-medium text-slate-400";
+    return;
+  }
+
+  if (ocupadas.length >= 10) {
+    $("avisoBaias").textContent = "Capacidade esgotada para este horário.";
+    $("avisoBaias").className = "text-xs mt-2 font-bold text-rose-500";
+  } else {
+    $("avisoBaias").textContent = `${10 - ocupadas.length} baias disponíveis.`;
+    $("avisoBaias").className = "text-xs mt-2 font-bold text-emerald-600";
+  }
+}
+
+$("agServico").addEventListener("change", () => {
+  const s = getServico($("agServico").value);
+  if(!s) return;
+  $("agValor").value = config[s.valorKey];
+
+  if (s.tipo === "pacote") {
+    $("agHoras").value = 1;
+    $("agHoras").readOnly = true;
+  } else {
+    $("agHoras").readOnly = false;
+  }
+
+  verificarBaias();
+  calcTotal();
+});
+
+["agData", "agInicio", "agFim"].forEach(id => $(id).addEventListener("change", () => {
+  autoCalcHours();
+  verificarBaias();
+}));
+
+["agHoras", "agValor", "agValorPago", "agPagamentoStatus"].forEach(id => $(id).addEventListener("input", calcTotal));
+$("agPagamentoStatus").addEventListener("change", () => {
+  if ($("agPagamentoStatus").value === "Pago") {
+    const s = getServico($("agServico").value);
+    const valor = Number($("agValor").value || 0);
+    const horas = Number($("agHoras").value || 0);
+    $("agValorPago").value = s?.tipo === "pacote" ? valor : valor * horas;
+    if (!$("agDataPagamento").value) $("agDataPagamento").value = todayISO();
+  }
+  if ($("agPagamentoStatus").value === "Cortesia") {
+    $("agValorPago").value = 0;
+  }
+  calcTotal();
+});
+
+function autoCalcHours() {
+  const inicio = $("agInicio").value;
+  const fim = $("agFim").value;
+  const s = getServico($("agServico").value);
+  if (!inicio || !fim || !s || s.tipo === "pacote") return;
+
+  const total = timeToMinutes(fim) - timeToMinutes(inicio);
+  if (total > 0) $("agHoras").value = (total / 60).toFixed(1);
+  calcTotal();
+}
+
+function calcTotal() {
+  const s = getServico($("agServico").value);
+  if (!s) return;
+
+  const valor = Number($("agValor").value || 0);
+  const horas = Number($("agHoras").value || 0);
+  const total = s.tipo === "pacote" ? valor : valor * horas;
+  const pago = Number($("agValorPago").value || 0);
+  const saldoAtual = $("agPagamentoStatus").value === "Cortesia" ? 0 : Math.max(0, total - pago);
+
+  $("previewTotal").textContent = money(total);
+  $("previewSaldo").textContent = `Saldo: ${money(saldoAtual)}`;
+}
+
+function inferirStatusPagamento(total, valorPago, statusAtual) {
+  if (statusAtual === "Cortesia") return "Cortesia";
+  if (Number(valorPago) <= 0) return "Pendente";
+  if (Number(valorPago) >= Number(total)) return "Pago";
+  return "Parcial";
+}
+
+$("formAgendamento").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const editId = $("agEditId").value;
+  const cliente = clientes.find(c => c.id === $("agCliente").value);
+  const servico = getServico($("agServico").value);
+
+  if (!cliente) return alert("Selecione um cliente válido.");
+
+  let baia = null;
+  if (servico.id === "coworking") {
+    const ocupadas = getBaiasOcupadas($("agData").value, $("agInicio").value, $("agFim").value, editId || null);
+    if (ocupadas.length >= 10 && $("agStatus").value !== "Cancelado") {
+      return alert("Limite excedido: todas as baias estão ocupadas neste período.");
+    }
+
+    baia = Number($("agBaia").value);
+    if (!baia && $("agStatus").value !== "Cancelado") return alert("Selecione qual baia o cliente irá ocupar.");
+    if (ocupadas.includes(baia) && $("agStatus").value !== "Cancelado") return alert("Esta baia acabou de ser reservada.");
+  }
+
+  const valor = Number($("agValor").value);
+  const horas = Number($("agHoras").value);
+  const total = servico.tipo === "pacote" ? valor : valor * horas;
+  let valorPago = Number($("agValorPago").value || 0);
+  let pagamentoStatus = $("agPagamentoStatus").value;
+
+  if (pagamentoStatus !== "Cortesia") {
+    pagamentoStatus = inferirStatusPagamento(total, valorPago, pagamentoStatus);
+  } else {
+    valorPago = 0;
+  }
+
+  const payload = {
+    id: editId || uid(),
+    clienteId: cliente.id,
+    clienteNome: cliente.nome,
+    clienteTelefone: cliente.telefone,
+    servicoId: servico.id,
+    servicoNome: servico.nome,
+    tipo: servico.tipo,
+    baia,
+    data: $("agData").value,
+    inicio: $("agInicio").value,
+    fim: $("agFim").value,
+    horas,
+    valor,
+    total,
+    status: $("agStatus").value,
+    pagamentoStatus,
+    formaPagamento: $("agFormaPagamento").value,
+    valorPago,
+    dataPagamento: $("agDataPagamento").value,
+    obs: $("agObs").value.trim(),
+    obsFinanceiro: $("agObsFinanceiro").value.trim()
+  };
+
+  if (editId) {
+    agendamentos = agendamentos.map(a => a.id === editId ? payload : a);
+  } else {
+    agendamentos.push(payload);
+  }
+
+  save();
+  resetFormAgenda();
+  renderAll();
+});
+
+function editAgendamento(id) {
+  const a = agendamentos.find(x => x.id === id);
+  if (!a) return;
+  changeTab("agenda");
+
+  $("tituloFormAgenda").textContent = "Modificar Agendamento";
+  $("agEditId").value = a.id;
+  $("agCliente").value = a.clienteId;
+  $("agServico").value = a.servicoId;
+  $("agData").value = a.data;
+  $("agInicio").value = a.inicio;
+  $("agFim").value = a.fim;
+  $("agHoras").value = a.horas;
+  $("agValor").value = a.valor;
+  $("agStatus").value = a.status;
+  $("agPagamentoStatus").value = a.pagamentoStatus || "Pendente";
+  $("agFormaPagamento").value = a.formaPagamento || formasPagamento[0];
+  $("agValorPago").value = Number(a.valorPago || 0);
+  $("agDataPagamento").value = a.dataPagamento || "";
+  $("agObs").value = a.obs || "";
+  $("agObsFinanceiro").value = a.obsFinanceiro || "";
+
+  verificarBaias();
+  if (a.baia) $("agBaia").value = a.baia;
+  $("agHoras").readOnly = getServico(a.servicoId)?.tipo === "pacote";
+  calcTotal();
+}
+
+function resetFormAgenda() {
+  $("formAgendamento").reset();
+  $("tituloFormAgenda").textContent = "Novo Agendamento";
+  $("agEditId").value = "";
+  $("agHoras").readOnly = false;
+  $("agValor").value = config.coworking;
+  $("agValorPago").value = 0;
+  $("agPagamentoStatus").value = "Pendente";
+  $("agFormaPagamento").value = formasPagamento[0] || "Pix";
+  verificarBaias();
+  calcTotal();
+}
+
+function addOneHour(id) {
+  const a = agendamentos.find(x => x.id === id);
+  if (!a || a.tipo !== "hora") return;
+  const novoFim = minutesToTime(timeToMinutes(a.fim) + 60);
+
+  if (a.servicoId === "coworking") {
+    const ocupadas = getBaiasOcupadas(a.data, a.fim, novoFim, a.id);
+    if (ocupadas.includes(Number(a.baia))) {
+      return alert("Overbooking detectado: esta baia possui outra reserva na hora seguinte.");
+    }
+  }
+
+  a.fim = novoFim;
+  a.horas = Number(a.horas) + 1;
+  a.total = Number(a.horas) * Number(a.valor);
+  a.pagamentoStatus = inferirStatusPagamento(a.total, a.valorPago || 0, a.pagamentoStatus);
+  save();
+  renderAll();
+}
+
+function renderAgendamentos() {
+  const busca = $("filtroBusca")?.value?.toLowerCase() || "";
+  const lista = [...agendamentos].filter(a =>
+    a.clienteNome.toLowerCase().includes(busca) ||
+    a.servicoNome.toLowerCase().includes(busca) ||
+    String(a.baia || "").includes(busca)
+  ).sort((a,b) => new Date(`${a.data}T${a.inicio}`) - new Date(`${b.data}T${b.inicio}`));
+
+  $("listaAgendamentos").innerHTML = lista.length ? lista.map(a => `
+    <div class="border border-slate-100 rounded-2xl p-5 bg-slate-50/50 hover:bg-white transition-all">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold ${serviceBadge(a.servicoId)}">${a.servicoNome}</span>
+            ${a.baia ? `<span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-slate-200 text-slate-800">Mesa ${String(a.baia).padStart(2, "0")}</span>` : ""}
+            <span class="${statusBadge(a.status)}">${a.status}</span>
+            <span class="text-[10px] ${payStatusBadge(a.pagamentoStatus)}">${a.pagamentoStatus}</span>
           </div>
-          <p class="text-slate-400 text-xs mt-1">📅 ${a.data.split('-').reverse().join('/')} | das ${a.inicio} (${a.horas}h contratadas)</p>
+          <h4 class="text-lg font-bold text-slate-900 pt-1">${a.clienteNome}</h4>
+          <p class="text-slate-500 text-xs flex items-center gap-2 flex-wrap">
+            <i class="fa-regular fa-calendar"></i> ${dateLabel(a.data)}
+            <i class="fa-regular fa-clock ml-1"></i> ${a.inicio} - ${a.fim} (${a.horas}h)
+          </p>
+          <p class="text-xs text-slate-400">
+            Pago: <strong class="text-emerald-600">${money(a.valorPago || 0)}</strong> •
+            Saldo: <strong class="text-amber-600">${money(saldo(a))}</strong> •
+            ${a.formaPagamento || "-"}
+          </p>
+          ${a.obs ? `<p class="text-xs italic text-slate-500 bg-white p-2 rounded-lg border border-slate-100 mt-1">${a.obs}</p>` : ""}
         </div>
-        <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-          <div class="text-left sm:text-right">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Falta para acabar</p>
-            <div class="font-mono font-bold text-slate-800 cronometro-regressivo" data-data="${a.data}" data-inicio="${a.inicio}" data-horas="${a.horas}">Calculando...</div>
+
+        <div class="md:text-right flex flex-row md:flex-col justify-between items-center md:items-end gap-2 border-t md:border-0 pt-3 md:pt-0 border-slate-200">
+          <div><p class="text-xl font-extrabold text-slate-900">${money(a.total)}</p></div>
+          <div class="flex gap-1 flex-wrap justify-end">
+            ${a.tipo === "hora" && a.status !== "Cancelado" ? `<button onclick="addOneHour('${a.id}')" class="ghost-btn" title="Adicionar 1 Hora">+1h</button>` : ""}
+            <button onclick="editAgendamento('${a.id}')" class="ghost-btn"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="dispararLinkWhatsApp('${a.id}')" class="ghost-btn text-emerald-600"><i class="fa-brands fa-whatsapp"></i></button>
+            <button onclick="deleteAgendamento('${a.id}')" class="danger-btn"><i class="fa-solid fa-trash"></i></button>
           </div>
-          <button onclick="deletarAgendamento('${a.id}')" class="text-slate-400 hover:text-rose-600 p-2 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join("") : `<div class="rounded-xl bg-slate-50 p-6 text-center text-xs text-slate-400">Nenhum registro operacional encontrado.</div>`;
+}
+
+function deleteAgendamento(id) {
+  if (!confirm("Tem certeza que deseja excluir este agendamento definitivamente?")) return;
+  agendamentos = agendamentos.filter(a => a.id !== id);
+  save();
+  renderAll();
+}
+
+$("formCliente").addEventListener("submit", e => {
+  e.preventDefault();
+  const editId = $("cliEditId").value;
+  const payload = {
+    id: editId || uid(),
+    nome: $("cliNome").value.trim(),
+    telefone: $("cliTelefone").value.trim(),
+    email: $("cliEmail").value.trim(),
+    instagram: $("cliInstagram").value.trim(),
+    tipo: $("cliTipo").value
+  };
+
+  if (editId) {
+    clientes = clientes.map(c => c.id === editId ? payload : c);
+    agendamentos = agendamentos.map(a => a.clienteId === editId ? { ...a, clienteNome: payload.nome, clienteTelefone: payload.telefone } : a);
+  } else {
+    clientes.push(payload);
+  }
+
+  save();
+  resetFormCliente();
+  renderAll();
+});
+
+function editCliente(id) {
+  const c = clientes.find(x => x.id === id);
+  if (!c) return;
+  changeTab("clientes");
+  $("tituloFormCliente").textContent = "Modificar Perfil CRM";
+  $("cliEditId").value = c.id;
+  $("cliNome").value = c.nome;
+  $("cliTelefone").value = c.telefone;
+  $("cliEmail").value = c.email;
+  $("cliInstagram").value = c.instagram;
+  $("cliTipo").value = c.tipo;
+}
+
+function resetFormCliente() {
+  $("formCliente").reset();
+  $("cliEditId").value = "";
+  $("tituloFormCliente").textContent = "Novo Registro CRM";
+}
+
+$("cliTelefone").addEventListener("input", e => {
+  let v = e.target.value.replace(/\D/g, "");
+  v = v.replace(/^(\d{2})(\d)/, "($1) $2");
+  v = v.replace(/(\d{5})(\d{4})$/, "$1-$2");
+  e.target.value = v.slice(0, 15);
+});
+
+function renderClientes() {
+  $("listaClientes").innerHTML = clientes.length ? clientes.map(c => `
+    <div class="border border-slate-100 rounded-2xl p-5 bg-slate-50/40 hover:bg-white transition-all flex flex-col justify-between">
+      <div>
+        <div class="flex justify-between items-start gap-2">
+          <div>
+            <h4 class="font-bold text-slate-900 text-base leading-tight">${c.nome}</h4>
+            <span class="inline-block mt-1 text-[10px] uppercase font-bold tracking-wider text-slate-400">${c.tipo}</span>
+          </div>
+          <div class="flex gap-1">
+            <button onclick="editCliente('${c.id}')" class="ghost-btn"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteCliente('${c.id}')" class="danger-btn"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+        <div class="mt-4 space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
+          <p class="flex items-center gap-2"><i class="fa-solid fa-phone text-slate-400 w-4 text-center"></i>${c.telefone}</p>
+          <p class="flex items-center gap-2"><i class="fa-solid fa-envelope text-slate-400 w-4 text-center"></i>${c.email || "Não informado"}</p>
+          <p class="flex items-center gap-2"><i class="fa-brands fa-instagram text-slate-400 w-4 text-center"></i>${c.instagram || "Não informado"}</p>
+        </div>
+      </div>
+    </div>
+  `).join("") : `<div class="col-span-2 rounded-xl bg-slate-50 p-6 text-center text-xs text-slate-400">Nenhum cliente cadastrado.</div>`;
+}
+
+function deleteCliente(id) {
+  if (!confirm("Deletar este cliente apagará também todas as reservas dele. Prosseguir?")) return;
+  clientes = clientes.filter(c => c.id !== id);
+  agendamentos = agendamentos.filter(a => a.clienteId !== id);
+  save();
+  renderAll();
+}
+
+function renderCalendario() {
+  if (!agendamentos.length) {
+    $("calendarioGrid").innerHTML = `<div class="rounded-xl bg-slate-50 p-6 text-center text-xs text-slate-400">Nenhum registro para renderização cronológica.</div>`;
+    return;
+  }
+
+  const grouped = {};
+  [...agendamentos].filter(a => a.status !== "Cancelado").sort((a,b) => new Date(`${a.data}T${a.inicio}`) - new Date(`${b.data}T${b.inicio}`)).forEach(a => {
+    if (!grouped[a.data]) grouped[a.data] = [];
+    grouped[a.data].push(a);
+  });
+
+  $("calendarioGrid").innerHTML = Object.keys(grouped).length ? Object.keys(grouped).map(data => `
+    <div class="border border-slate-200/60 rounded-2xl overflow-hidden bg-white shadow-sm">
+      <div class="bg-slate-900 text-white px-5 py-3 text-xs uppercase font-bold tracking-wider flex justify-between items-center">
+        <span>${dateLabel(data)}</span>
+        <span class="bg-white/20 px-2 py-0.5 rounded text-[10px]">${grouped[data].length} Slots</span>
+      </div>
+      <div class="p-4 divide-y divide-slate-100">
+        ${grouped[data].map(a => `
+          <div class="py-3 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-12 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/60 flex flex-col items-center justify-center font-mono text-xs font-bold leading-tight">
+                <span>${a.inicio}</span>
+                <span class="text-[9px] text-slate-400 font-normal">${a.fim}</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="px-2 py-0.5 rounded text-[9px] font-bold ${serviceBadge(a.servicoId)}">${a.servicoNome}</span>
+                  ${a.baia ? `<span class="text-[10px] font-bold text-slate-500">Mesa ${String(a.baia).padStart(2, "0")}</span>` : ""}
+                  <span class="text-[10px] ${payStatusBadge(a.pagamentoStatus)}">${a.pagamentoStatus}</span>
+                </div>
+                <h5 class="font-bold text-slate-900 text-sm mt-0.5">${a.clienteNome}</h5>
+              </div>
+            </div>
+            <button onclick="editAgendamento('${a.id}')" class="ghost-btn">Ver</button>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `).join("") : `<div class="rounded-xl bg-slate-50 p-6 text-center text-xs text-slate-400">Nenhum evento ativo confirmado.</div>`;
+}
+
+function renderDashboard() {
+  $("statClientes").textContent = clientes.length;
+  $("statAgendamentos").textContent = agendamentos.filter(a => a.status !== "Cancelado").length;
+
+  const recebido = agendamentos
+    .filter(a => a.status !== "Cancelado")
+    .reduce((s,a) => s + Number(a.valorPago || 0), 0);
+
+  $("statReceita").textContent = money(recebido);
+
+  const agora = new Date();
+  const horaMinutosAgora = agora.getHours() * 60 + agora.getMinutes();
+  const hojeString = hojeLocalISO();
+
+  const ocupadasAgora = agendamentos.filter(a =>
+    a.servicoId === "coworking" &&
+    a.status === "Confirmado" &&
+    a.data === hojeString &&
+    timeToMinutes(a.inicio) <= horaMinutosAgora &&
+    timeToMinutes(a.fim) > horaMinutosAgora
+  ).length;
+
+  $("statBaias").textContent = Math.max(0, 10 - ocupadasAgora);
+
+  const proximos = [...agendamentos]
+    .filter(a => a.status === "Confirmado" && new Date(`${a.data}T${a.inicio}`) >= agora)
+    .sort((a,b) => new Date(`${a.data}T${a.inicio}`) - new Date(`${b.data}T${b.inicio}`))
+    .slice(0, 5);
+
+  $("dashboardList").innerHTML = proximos.length ? proximos.map(a => `
+    <div class="flex items-center justify-between p-3 border-b border-slate-100 last:border-0 hover:bg-slate-50/60 rounded-xl transition-colors">
+      <div class="flex items-center gap-3">
+        <div class="w-2.5 h-2.5 rounded-full ${a.servicoId==='coworking'?'bg-slate-900':a.servicoId==='studio'?'bg-indigo-500':'bg-violet-500'}"></div>
+        <div>
+          <p class="text-sm font-bold text-slate-900">${a.clienteNome}</p>
+          <p class="text-xs text-slate-400">${a.servicoNome} • ${dateLabel(a.data)} às ${a.inicio}</p>
+        </div>
+      </div>
+      <span class="text-xs font-mono font-bold text-slate-700">${money(a.total)}</span>
+    </div>
+  `).join("") : `<p class="text-xs text-slate-400 text-center py-4">Livre de compromissos operacionais nas próximas horas.</p>`;
+}
+
+function hojeLocalISO() {
+  const d = new Date();
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().split("T")[0];
+}
+
+function renderConfig() {
+  $("cfgCoworking").value = config.coworking;
+  $("cfgStudio").value = config.studio;
+  $("cfgSala").value = config.sala;
+  $("cfgFotoEssencial").value = config.fotoEssencial;
+  $("cfgFotoProfissional").value = config.fotoProfissional;
+  $("cfgFotoPremium").value = config.fotoPremium;
+}
+
+$("formConfig").addEventListener("submit", e => {
+  e.preventDefault();
+  config.coworking = Number($("cfgCoworking").value);
+  config.studio = Number($("cfgStudio").value);
+  config.sala = Number($("cfgSala").value);
+  config.fotoEssencial = Number($("cfgFotoEssencial").value);
+  config.fotoProfissional = Number($("cfgFotoProfissional").value);
+  config.fotoPremium = Number($("cfgFotoPremium").value);
+  save();
+  alert("Preços e diretrizes atualizados.");
+  renderAll();
+});
+
+
+function getBaiasEstadoAtual() {
+  const agora = new Date();
+  const hoje = hojeLocalISO();
+  const minutoAtual = agora.getHours() * 60 + agora.getMinutes();
+  const estados = [];
+
+  for (let i = 1; i <= 10; i++) {
+    const agendamentoAtual = agendamentos
+      .filter(a =>
+        a.servicoId === "coworking" &&
+        Number(a.baia) === i &&
+        a.status === "Confirmado" &&
+        a.data === hoje &&
+        timeToMinutes(a.inicio) <= minutoAtual &&
+        timeToMinutes(a.fim) > minutoAtual
+      )
+      .sort((a, b) => timeToMinutes(a.fim) - timeToMinutes(b.fim))[0];
+
+    const proximaReserva = agendamentos
+      .filter(a =>
+        a.servicoId === "coworking" &&
+        Number(a.baia) === i &&
+        a.status === "Confirmado" &&
+        new Date(`${a.data}T${a.inicio}`) > agora
+      )
+      .sort((a, b) => new Date(`${a.data}T${a.inicio}`) - new Date(`${b.data}T${b.inicio}`))[0];
+
+    estados.push({
+      numero: i,
+      atual: agendamentoAtual || null,
+      proxima: proximaReserva || null
+    });
+  }
+
+  return estados;
+}
+
+function formatCountdown(ms) {
+  if (ms <= 0) return "00:00:00";
+  const totalSeconds = Math.floor(ms / 1000);
+  const h = Math.floor(totalSeconds / 3600).toString().padStart(2, "0");
+  const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, "0");
+  const s = Math.floor(totalSeconds % 60).toString().padStart(2, "0");
+  return `${h}:${m}:${s}`;
+}
+
+function renderBaiasPainel() {
+  if (!$("baiasGrid")) return;
+
+  const agora = new Date();
+  const estados = getBaiasEstadoAtual();
+
+  const ocupadas = estados.filter(e => e.atual).length;
+  const livres = 10 - ocupadas;
+  const encerrando = estados.filter(e => {
+    if (!e.atual) return false;
+    const fim = new Date(`${e.atual.data}T${e.atual.fim}`);
+    const minRestantes = (fim - agora) / 60000;
+    return minRestantes <= 10 && minRestantes > 0;
+  }).length;
+
+  const proximasLiberacoes = estados
+    .filter(e => e.atual)
+    .map(e => e.atual.fim)
+    .sort();
+
+  $("baiasLivres").textContent = livres;
+  $("baiasOcupadas").textContent = ocupadas;
+  $("baiasEncerrando").textContent = encerrando;
+  $("baiasProximaLiberacao").textContent = proximasLiberacoes[0] || "--:--";
+
+  $("baiasGrid").innerHTML = estados.map(e => {
+    const atual = e.atual;
+    const proxima = e.proxima;
+
+    if (!atual) {
+      return `
+        <div class="premium-card p-5 border-emerald-200 bg-emerald-50/40">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase font-black tracking-wider text-emerald-700">Livre</p>
+              <h4 class="text-2xl font-black text-slate-900 mt-1">Baia ${String(e.numero).padStart(2, "0")}</h4>
+            </div>
+            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i class="fa-solid fa-check"></i>
+            </div>
+          </div>
+
+          <div class="mt-5 rounded-2xl bg-white border border-emerald-100 p-4">
+            <p class="text-xs text-slate-400 font-bold uppercase">Status</p>
+            <p class="text-lg font-black text-emerald-600 mt-1">Disponível agora</p>
+          </div>
+
+          <div class="mt-4 text-xs text-slate-500 min-h-[42px]">
+            ${proxima ? `
+              <p class="font-bold text-slate-700">Próxima reserva</p>
+              <p>${proxima.clienteNome} • ${dateLabel(proxima.data)} às ${proxima.inicio}</p>
+            ` : `<p>Nenhuma próxima reserva registrada.</p>`}
+          </div>
+
+          <button onclick="changeTab('agenda')" class="ghost-btn mt-4 w-full">
+            <i class="fa-solid fa-plus"></i> Agendar nesta baia
+          </button>
+        </div>
+      `;
+    }
+
+    const fim = new Date(`${atual.data}T${atual.fim}`);
+    const msRestante = fim - agora;
+    const minRestante = msRestante / 60000;
+    const finalizando = minRestante <= 10;
+
+    return `
+      <div class="premium-card p-5 ${finalizando ? "border-amber-300 bg-amber-50/50" : "border-rose-200 bg-rose-50/40"}">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs uppercase font-black tracking-wider ${finalizando ? "text-amber-700" : "text-rose-700"}">
+              ${finalizando ? "Finalizando" : "Ocupada"}
+            </p>
+            <h4 class="text-2xl font-black text-slate-900 mt-1">Baia ${String(e.numero).padStart(2, "0")}</h4>
+          </div>
+          <div class="w-11 h-11 rounded-2xl ${finalizando ? "bg-amber-100 text-amber-700" : "bg-rose-100 text-rose-700"} flex items-center justify-center">
+            <i class="fa-solid ${finalizando ? "fa-hourglass-half" : "fa-user-clock"}"></i>
+          </div>
+        </div>
+
+        <div class="mt-5 rounded-2xl bg-white border ${finalizando ? "border-amber-100" : "border-rose-100"} p-4">
+          <p class="text-xs text-slate-400 font-bold uppercase">Tempo restante</p>
+          <p class="text-3xl font-black font-mono ${finalizando ? "text-amber-600" : "text-slate-900"} mt-1">${formatCountdown(msRestante)}</p>
+          <p class="text-xs text-slate-400 mt-1">Encerra às ${atual.fim}</p>
+        </div>
+
+        <div class="mt-4 text-xs text-slate-600 space-y-1 min-h-[74px]">
+          <p class="font-black text-slate-900 text-sm">${atual.clienteNome}</p>
+          <p>${atual.inicio} às ${atual.fim} • ${money(atual.total)}</p>
+          <p>Pagamento: <strong>${atual.pagamentoStatus || "Pendente"}</strong></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <button onclick="addOneHour('${atual.id}')" class="ghost-btn">
+            <i class="fa-solid fa-plus"></i> +1h
+          </button>
+          <button onclick="dispararLinkWhatsApp('${atual.id}', 'checkout')" class="ghost-btn text-emerald-600">
+            <i class="fa-brands fa-whatsapp"></i>
+          </button>
+          <button onclick="editAgendamento('${atual.id}')" class="ghost-btn col-span-2">
+            <i class="fa-solid fa-pen"></i> Editar reserva
+          </button>
         </div>
       </div>
     `;
-  }).join("") || `<p class="text-slate-400 text-xs italic">Nenhum agendamento ativo.</p>`;
+  }).join("");
 
-  $("tabelaFinanceiro").innerHTML = agendamentos.map(a => `
-    <tr class="hover:bg-slate-50/50">
-      <td class="p-4 font-medium text-slate-900">${a.clienteNome}</td>
-      <td class="p-4"><span class="text-xs bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded">${a.baia ? 'Baia 0'+a.baia : a.servico}</span></td>
-      <td class="p-4 text-xs text-slate-500">${a.data.split('-').reverse().join('/')}</td>
-      <td class="p-4 font-bold text-slate-900">${formatarMoeda(a.total)}</td>
-      <td class="p-4">
-        <select onchange="atualizarFinanceiroDireto('${a.id}', 'pagamentoStatus', this.value)" class="bg-transparent font-bold text-xs outline-none cursor-pointer ${a.pagamentoStatus === 'Pago' ? 'text-emerald-600' : 'text-amber-600'}">
-          <option value="Pendente" ${a.pagamentoStatus === 'Pendente' ? 'selected' : ''}>Pendente</option>
-          <option value="Pago" ${a.pagamentoStatus === 'Pago' ? 'selected' : ''}>Pago</option>
-        </select>
-      </td>
-      <td class="p-4">
-        <select onchange="atualizarFinanceiroDireto('${a.id}', 'formaPagamento', this.value)" class="bg-transparent text-xs text-slate-600 outline-none cursor-pointer">
-          <option value="Pix" ${a.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
-          <option value="Cartão" ${a.formaPagamento === 'Cartão' ? 'selected' : ''}>Cartão</option>
-          <option value="Dinheiro" ${a.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
-        </select>
-      </td>
-    </tr>
-  `).join("") || `<tr><td colspan="6" class="p-8 text-center text-slate-400 text-xs italic">Nenhuma transação financeira registrada.</td></tr>`;
+  const proximas = agendamentos
+    .filter(a =>
+      a.servicoId === "coworking" &&
+      a.status === "Confirmado" &&
+      new Date(`${a.data}T${a.inicio}`) > agora
+    )
+    .sort((a,b) => new Date(`${a.data}T${a.inicio}`) - new Date(`${b.data}T${b.inicio}`))
+    .slice(0, 8);
 
-  $("dashClientes").textContent = clientes.length;
-  $("dashAgendamentos").textContent = agendamentos.length;
-  const pago = agendamentos.filter(a => a.pagamentoStatus === "Pago").reduce((sum, a) => sum + Number(a.total), 0);
-  const pendente = agendamentos.filter(a => a.pagamentoStatus === "Pendente").reduce((sum, a) => sum + Number(a.total), 0);
-  $("dashRecebido").textContent = formatarMoeda(pago);
-  $("dashPendente").textContent = formatarMoeda(pendente);
+  $("baiasProximasReservas").innerHTML = proximas.length ? proximas.map(a => `
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+      <div>
+        <p class="font-bold text-slate-900">${a.clienteNome}</p>
+        <p class="text-xs text-slate-400">Baia ${String(a.baia).padStart(2, "0")} • ${dateLabel(a.data)} • ${a.inicio} às ${a.fim}</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="editAgendamento('${a.id}')" class="ghost-btn">Editar</button>
+        <button onclick="dispararLinkWhatsApp('${a.id}', 'lembrete')" class="ghost-btn text-emerald-600"><i class="fa-brands fa-whatsapp"></i></button>
+      </div>
+    </div>
+  `).join("") : `<div class="text-center p-5 bg-slate-50 rounded-xl text-xs text-slate-400">Nenhuma próxima reserva de coworking.</div>`;
 }
 
-setInterval(function dispararCronometros() {
-  document.querySelectorAll(".cronometro-regressivo").forEach(el => {
-    const dataStr = el.getAttribute("data-data");
-    const inicioStr = el.getAttribute("data-inicio");
-    const horasContratadas = Number(el.getAttribute("data-horas"));
-    if(!dataStr || !inicioStr) return;
-    const [ano, mes, dia] = dataStr.split("-").map(Number);
-    const [horaInic, minInic] = inicioStr.split(":").map(Number);
-    const dataFim = new Date(ano, mes - 1, dia, horaInic, minInic);
-    dataFim.setMinutes(dataFim.getMinutes() + (horasContratadas * 60));
-    const agora = new Date();
-    const diferenca = dataFim.getTime() - agora.getTime();
-    if (diferenca > 0) {
-      const h = Math.floor(diferenca / (1000 * 60 * 60)).toString().padStart(2, "0");
-      const m = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, "0");
-      const s = Math.floor((diferenca % (1000 * 60)) / 1000).toString().padStart(2, "0");
-      el.textContent = `${h}:${m}:${s}`;
-      el.className = "font-mono font-bold text-slate-800 text-sm";
-    } else {
-      el.textContent = "Tempo esgotado";
-      el.className = "font-bold text-rose-600 text-xs uppercase tracking-wider";
-    }
+
+function renderFinanceiro() {
+  const confirmados = agendamentos.filter(a => a.status !== "Cancelado");
+  const filtroStatus = $("finFiltroStatus").value;
+  const filtroForma = $("finFiltroForma").value;
+  const busca = $("finFiltroBusca").value.toLowerCase();
+
+  const recebido = confirmados.reduce((s,a) => s + Number(a.valorPago || 0), 0);
+  const totalBruto = confirmados.filter(a => a.pagamentoStatus !== "Cortesia").reduce((s,a) => s + Number(a.total || 0), 0);
+  const emAberto = confirmados.reduce((s,a) => s + saldo(a), 0);
+  const parcial = confirmados.filter(a => a.pagamentoStatus === "Parcial").reduce((s,a) => s + Number(a.valorPago || 0), 0);
+  const ticket = confirmados.length ? totalBruto / confirmados.length : 0;
+
+  $("finRecebido").textContent = money(recebido);
+  $("finPendente").textContent = money(emAberto);
+  $("finParcial").textContent = money(parcial);
+  $("finTotal").textContent = money(totalBruto);
+  $("finTicket").textContent = money(ticket);
+
+  $("listaFormasPagamento").innerHTML = formasPagamento.map((f, i) => `
+    <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs">
+      <span class="font-medium text-slate-800"><i class="fa-solid fa-credit-card text-slate-400 mr-2"></i>${f}</span>
+      <button type="button" onclick="deleteFormaPagamento(${i})" class="text-rose-500 hover:text-rose-700"><i class="fa-regular fa-trash-can"></i></button>
+    </div>
+  `).join("");
+
+  const lista = confirmados.filter(a => {
+    const matchStatus = !filtroStatus || a.pagamentoStatus === filtroStatus;
+    const matchForma = !filtroForma || a.formaPagamento === filtroForma;
+    const matchBusca = !busca || a.clienteNome.toLowerCase().includes(busca) || a.servicoNome.toLowerCase().includes(busca);
+    return matchStatus && matchForma && matchBusca;
   });
+
+  $("listaFinanceiro").innerHTML = lista.length ? lista.map(a => `
+    <div class="border border-slate-100 bg-slate-50/50 rounded-2xl p-4 text-xs">
+      <div class="grid lg:grid-cols-12 gap-3 items-end">
+        <div class="lg:col-span-3">
+          <p class="font-bold text-slate-900 text-sm">${a.clienteNome}</p>
+          <p class="text-slate-400 mt-0.5">${a.servicoNome}</p>
+          <p class="text-slate-400">${dateLabel(a.data)} • ${a.inicio}</p>
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="premium-label">Status</label>
+          <select class="premium-input text-xs" onchange="updateFinanceiroCampo('${a.id}', 'pagamentoStatus', this.value)">
+            ${statusPagamento.map(s => `<option value="${s}" ${a.pagamentoStatus === s ? "selected" : ""}>${s}</option>`).join("")}
+          </select>
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="premium-label">Forma</label>
+          <select class="premium-input text-xs" onchange="updateFinanceiroCampo('${a.id}', 'formaPagamento', this.value)">
+            ${formasPagamento.map(f => `<option value="${f}" ${a.formaPagamento === f ? "selected" : ""}>${f}</option>`).join("")}
+          </select>
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="premium-label">Valor Pago</label>
+          <input class="premium-input text-xs" type="number" step="0.01" value="${Number(a.valorPago || 0)}" onchange="updateFinanceiroCampo('${a.id}', 'valorPago', this.value)">
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="premium-label">Data Pgto.</label>
+          <input class="premium-input text-xs" type="date" value="${a.dataPagamento || ""}" onchange="updateFinanceiroCampo('${a.id}', 'dataPagamento', this.value)">
+        </div>
+
+        <div class="lg:col-span-1 flex gap-1">
+          <button onclick="quitarAgendamento('${a.id}')" class="ghost-btn text-emerald-600" title="Quitar"><i class="fa-solid fa-check"></i></button>
+          <button onclick="editAgendamento('${a.id}')" class="ghost-btn" title="Editar completo"><i class="fa-solid fa-pen"></i></button>
+        </div>
+      </div>
+
+      <div class="mt-3 grid md:grid-cols-4 gap-3 items-end">
+        <div>
+          <p class="text-slate-400">Total</p>
+          <p class="font-extrabold text-slate-900 text-sm">${money(a.total)}</p>
+        </div>
+        <div>
+          <p class="text-slate-400">Pago</p>
+          <p class="font-extrabold text-emerald-600 text-sm">${money(a.valorPago || 0)}</p>
+        </div>
+        <div>
+          <p class="text-slate-400">Saldo</p>
+          <p class="font-extrabold text-amber-600 text-sm">${money(saldo(a))}</p>
+        </div>
+        <div>
+          <span class="inline-block ${payStatusBadge(a.pagamentoStatus)}">${a.pagamentoStatus}</span>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="premium-label">Observação financeira</label>
+        <textarea class="premium-input text-xs" rows="2" onchange="updateFinanceiroCampo('${a.id}', 'obsFinanceiro', this.value)">${a.obsFinanceiro || ""}</textarea>
+      </div>
+    </div>
+  `).join("") : `<div class="text-center p-6 text-xs text-slate-400 bg-slate-50 rounded-xl">Nenhum lançamento financeiro encontrado para os filtros atuais.</div>`;
+}
+
+function updateFinanceiroCampo(id, campo, valor) {
+  agendamentos = agendamentos.map(a => {
+    if (a.id !== id) return a;
+
+    const atualizado = { ...a };
+
+    if (campo === "valorPago") {
+      atualizado.valorPago = Math.max(0, Number(valor || 0));
+      atualizado.pagamentoStatus = inferirStatusPagamento(atualizado.total, atualizado.valorPago, atualizado.pagamentoStatus);
+      if (atualizado.pagamentoStatus === "Pago" && !atualizado.dataPagamento) atualizado.dataPagamento = todayISO();
+    } else if (campo === "pagamentoStatus") {
+      atualizado.pagamentoStatus = valor;
+      if (valor === "Pago") {
+        atualizado.valorPago = Number(atualizado.total || 0);
+        if (!atualizado.dataPagamento) atualizado.dataPagamento = todayISO();
+      }
+      if (valor === "Pendente") {
+        atualizado.valorPago = 0;
+        atualizado.dataPagamento = "";
+      }
+      if (valor === "Cortesia") {
+        atualizado.valorPago = 0;
+        if (!atualizado.dataPagamento) atualizado.dataPagamento = todayISO();
+      }
+      if (valor === "Parcial" && Number(atualizado.valorPago || 0) <= 0) {
+        atualizado.valorPago = 0;
+      }
+    } else {
+      atualizado[campo] = valor;
+    }
+
+    return atualizado;
+  });
+
+  save();
+  renderAll();
+}
+
+function quitarAgendamento(id) {
+  agendamentos = agendamentos.map(a => {
+    if (a.id !== id) return a;
+    return {
+      ...a,
+      pagamentoStatus: "Pago",
+      valorPago: Number(a.total || 0),
+      dataPagamento: a.dataPagamento || todayISO()
+    };
+  });
+
+  save();
+  renderAll();
+}
+
+function marcarTodosComoPagos() {
+  if (!confirm("Deseja marcar todos os lançamentos pendentes/parciais como pagos?")) return;
+
+  agendamentos = agendamentos.map(a => {
+    if (a.status === "Cancelado" || a.pagamentoStatus === "Pago" || a.pagamentoStatus === "Cortesia") return a;
+    return {
+      ...a,
+      pagamentoStatus: "Pago",
+      valorPago: Number(a.total || 0),
+      dataPagamento: a.dataPagamento || todayISO()
+    };
+  });
+
+  save();
+  renderAll();
+}
+
+$("formPagamento").addEventListener("submit", e => {
+  e.preventDefault();
+  const nova = $("novaFormaPagamento").value.trim();
+  if(!nova) return;
+  if(formasPagamento.includes(nova)) return alert("Este método já está cadastrado.");
+
+  formasPagamento.push(nova);
+  save();
+  $("novaFormaPagamento").value = "";
+  renderAll();
+});
+
+function deleteFormaPagamento(index) {
+  if(formasPagamento.length <= 1) return alert("Deve haver ao menos um método financeiro ativo.");
+  const removida = formasPagamento[index];
+  if (!confirm(`Excluir a forma de pagamento "${removida}"?`)) return;
+
+  formasPagamento.splice(index, 1);
+  agendamentos = agendamentos.map(a => a.formaPagamento === removida ? { ...a, formaPagamento: formasPagamento[0] } : a);
+  save();
+  renderAll();
+}
+
+function renderMensagens() {
+  const ativos = agendamentos.filter(a => a.status === "Confirmado");
+  $("listaMensagens").innerHTML = ativos.length ? ativos.map(a => `
+    <div class="p-4 border border-slate-100 bg-slate-50/60 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+      <div>
+        <p class="font-bold text-slate-900 text-sm">${a.clienteNome}</p>
+        <p class="text-slate-400 mt-0.5">${a.servicoNome} em ${dateLabel(a.data)} das ${a.inicio} às ${a.fim}</p>
+      </div>
+      <div class="flex gap-1 flex-wrap">
+        <button onclick="dispararLinkWhatsApp('${a.id}', 'lembrete')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl font-medium flex items-center gap-1.5"><i class="fa-brands fa-whatsapp"></i> Pré-reserva</button>
+        ${a.servicoId === 'coworking' ? `<button onclick="dispararLinkWhatsApp('${a.id}', 'checkout')" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-2 rounded-xl font-medium flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> Fim do tempo</button>` : ''}
+      </div>
+    </div>
+  `).join("") : `<div class="text-center p-4 text-xs text-slate-400">Nenhum gatilho de disparo pendente.</div>`;
+}
+
+function dispararLinkWhatsApp(id, tipo = "lembrete") {
+  const a = agendamentos.find(x => x.id === id);
+  if(!a) return;
+
+  let msg = "";
+  if(tipo === "lembrete") {
+    msg = `Olá, *${a.clienteNome}*! Passando para confirmar seu horário na *GODigital*.\n\n📍 *Espaço:* ${a.servicoNome}\n📅 *Data:* ${dateLabel(a.data)}\n⏰ *Período:* das ${a.inicio} às ${a.fim}\n\nTe aguardamos!`;
+  } else {
+    msg = `Olá, *${a.clienteNome}*.\n\nSeu tempo contratado na baia de coworking encerra em *10 minutos* (às ${a.fim}). Caso deseje estender o período por mais 1 hora, procure nossa recepção para validação de disponibilidade.`;
+  }
+
+  const phone = cleanPhone(a.clienteTelefone);
+  if (!phone) return alert("Cliente sem telefone válido.");
+
+  const link = `https://api.whatsapp.com/send?phone=55${phone}&text=${encodeURIComponent(msg)}`;
+  window.open(link, "_blank");
+}
+
+function verificarLembretes(manual = false) {
+  if(manual) alert("Varredura concluída. Use os botões para disparar os WhatsApps manualmente.");
+}
+
+function limparFiltros() {
+  if ($("filtroBusca")) $("filtroBusca").value = "";
+  if ($("finFiltroStatus")) $("finFiltroStatus").value = "";
+  if ($("finFiltroForma")) $("finFiltroForma").value = "";
+  if ($("finFiltroBusca")) $("finFiltroBusca").value = "";
+  renderAll();
+}
+
+function exportarBackup() {
+  const backup = {
+    exportadoEm: new Date().toISOString(),
+    clientes,
+    agendamentos,
+    formasPagamento,
+    config
+  };
+
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `godigital-backup-${todayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+save();
+
+setInterval(() => {
+  renderBaiasPainel();
+  renderDashboard();
 }, 1000);
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderAll();
+  resetFormAgenda();
+  const currentTab = localStorage.getItem(KEYS.aba) || "dashboard";
+  changeTab(currentTab);
+});
 </script>
 </body>
 </html>
