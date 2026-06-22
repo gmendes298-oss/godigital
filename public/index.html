@@ -78,6 +78,14 @@
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.16);
     }
 
+    .premium-btn:disabled {
+      background: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
     .ghost-btn {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -150,7 +158,7 @@
       </div>
 
       <div class="pt-4 border-t border-neutral-900 text-[10px] text-neutral-500 font-mono text-center">
-        v4.0 Baias em Tempo Real • LocalStorage
+        v4.1 Baias em Tempo Real • LocalStorage
       </div>
     </div>
   </aside>
@@ -236,7 +244,7 @@
             </div>
 
             <div class="flex gap-2 pt-2">
-              <button class="premium-btn flex-1 text-sm"><i class="fa-solid fa-check"></i> Salvar</button>
+              <button id="btnSalvarAgenda" class="premium-btn flex-1 text-sm"><i class="fa-solid fa-check"></i> Salvar</button>
               <button type="button" onclick="resetFormAgenda()" class="ghost-btn">Limpar</button>
             </div>
           </form>
@@ -408,7 +416,6 @@
       </div>
     </section>
   </main>
-</div>
 
 <script>
 const KEYS = {
@@ -497,7 +504,8 @@ function cleanPhone(phone) { return String(phone || "").replace(/\D/g, ""); }
 
 function dateLabel(date) {
   if(!date) return "";
-  return new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
+  // Tratamento de fuso horário adicionando a hora para evitar decréscimo de dias
+  return new Date(date + "T12:00:00").toLocaleDateString("pt-BR", {
     weekday:"short", day:"2-digit", month:"short", year:"numeric"
   });
 }
@@ -599,10 +607,12 @@ function renderSelectClientes() {
   if (!clientes.length) {
     $("agCliente").innerHTML = `<option value="">Cadastre um cliente no CRM primeiro</option>`;
     $("agCliente").disabled = true;
+    if($("btnSalvarAgenda")) $("btnSalvarAgenda").disabled = true;
     return;
   }
 
   $("agCliente").disabled = false;
+  if($("btnSalvarAgenda")) $("btnSalvarAgenda").disabled = false;
   $("agCliente").innerHTML = `<option value="">Selecione um cliente...</option>` + clientes.map(c =>
     `<option value="${c.id}">${c.nome}</option>`
   ).join("");
@@ -1136,7 +1146,7 @@ $("formConfig").addEventListener("submit", e => {
   config.fotoProfissional = Number($("cfgFotoProfissional").value);
   config.fotoPremium = Number($("cfgFotoPremium").value);
   save();
-  alert("Preços e diretrizes atualizados.");
+  alert("Preços e diretrizes updated.");
   renderAll();
 });
 
@@ -1218,29 +1228,30 @@ function renderBaiasPainel() {
 
     if (!atual) {
       return `
-        <div class="premium-card p-5 border-emerald-200 bg-emerald-50/40">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-xs uppercase font-black tracking-wider text-emerald-700">Livre</p>
-              <h4 class="text-2xl font-black text-slate-900 mt-1">Baia ${String(e.numero).padStart(2, "0")}</h4>
+        <div class="premium-card p-5 border-emerald-200 bg-emerald-50/40 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase font-black tracking-wider text-emerald-700">Livre</p>
+                <h4 class="text-2xl font-black text-slate-900 mt-1">Baia ${String(e.numero).padStart(2, "0")}</h4>
+              </div>
+              <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <i class="fa-solid fa-check"></i>
+              </div>
             </div>
-            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-              <i class="fa-solid fa-check"></i>
+
+            <div class="mt-5 rounded-2xl bg-white border border-emerald-100 p-4">
+              <p class="text-xs text-slate-400 font-bold uppercase">Status</p>
+              <p class="text-lg font-black text-emerald-600 mt-1">Disponível agora</p>
+            </div>
+
+            <div class="mt-4 text-xs text-slate-500 min-h-[42px]">
+              ${proxima ? `
+                <p class="font-bold text-slate-700">Próxima reserva</p>
+                <p>${proxima.clienteNome} • ${dateLabel(proxima.data)} às ${proxima.inicio}</p>
+              ` : `<p>Nenhuma próxima reserva registrada.</p>`}
             </div>
           </div>
-
-          <div class="mt-5 rounded-2xl bg-white border border-emerald-100 p-4">
-            <p class="text-xs text-slate-400 font-bold uppercase">Status</p>
-            <p class="text-lg font-black text-emerald-600 mt-1">Disponível agora</p>
-          </div>
-
-          <div class="mt-4 text-xs text-slate-500 min-h-[42px]">
-            ${proxima ? `
-              <p class="font-bold text-slate-700">Próxima reserva</p>
-              <p>${proxima.clienteNome} • ${dateLabel(proxima.data)} às ${proxima.inicio}</p>
-            ` : `<p>Nenhuma próxima reserva registrada.</p>`}
-          </div>
-
           <button onclick="changeTab('agenda')" class="ghost-btn mt-4 w-full">
             <i class="fa-solid fa-plus"></i> Agendar nesta baia
           </button>
@@ -1576,10 +1587,11 @@ function exportarBackup() {
 
 save();
 
+// Ajustado para rodar a cada 10 segundos, reduzindo drasticamente o uso excessivo de processamento
 setInterval(() => {
   renderBaiasPainel();
   renderDashboard();
-}, 1000);
+}, 10000);
 
 document.addEventListener("DOMContentLoaded", () => {
   renderAll();
